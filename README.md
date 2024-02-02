@@ -16,7 +16,7 @@ Open project in Intellij and press run button
 
 ### Lint
 ```bash
-./gradlew sonarlintMain´ and ´./gradlew sonarlintTest
+./gradlew sonarlintMain and ./gradlew sonarlintTest
 ```
 
 ### Build
