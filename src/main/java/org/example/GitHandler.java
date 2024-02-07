@@ -60,4 +60,39 @@ public class GitHandler {
     public void cloneRepo() {
         cloneRepo(remoteRepoURL, localRepoDirFile);
     }
+
+    /**
+     * Deletes the local files of the repository if they are present
+     */
+    public void deleteLocalRepo() {
+        try {
+            if(localRepoDirFile.exists()){
+                delete(localRepoDirFile.toPath());
+            }
+        } catch (IOException e) {
+            logger.info("Error while trying to delete the local repo files");
+        }
+    }
+
+    /**
+     * Deletes a directory and its content recursively
+     * @param path the path of the directory to be deleted
+     */
+    public static void delete(Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                logger.info("deleting: " + file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                logger.info("deleting: " + dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
 }
