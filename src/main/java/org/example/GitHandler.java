@@ -4,7 +4,7 @@ import static org.example.Main.logger;
 
 public class GitHandler {
 
-    public GitHandler(String repoPath) {
+    public GitHandler() {
         logger.info("Git handler was created");
     }
 
