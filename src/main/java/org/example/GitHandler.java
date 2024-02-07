@@ -11,16 +11,19 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import static org.example.Main.logger;
 
 public class GitHandler {
-    private final String localRepoPath;
     private final File localRepoDirFile;
     private final String remoteRepoURL;
 
     private GitHandler(String localRepoPath, String remoteRepoURL) {
-        this.localRepoPath = localRepoPath;
         this.localRepoDirFile = new File(localRepoPath);
         this.remoteRepoURL = remoteRepoURL;
     }
@@ -29,7 +32,20 @@ public class GitHandler {
         this("git-repo/continuous-integration", "git@github.com:DD2480-Group-25/continuous-integration.git");
     }
 
-    public void cloneRepo(String remotePath, File localPath) {
+    public boolean isRepoCloned() {
+        boolean result;
+        try (Git git = Git.open(localRepoDirFile)) {
+            // TODO make sure the repo is valid
+            result = true;
+        } catch (Exception e) {
+            result = false;
+            logger.error(e.getMessage());
+        }
+
+        return result;
+    }
+
+    private void cloneRepo(String remotePath, File localPath) {
         try {
             CloneCommand cloneCommand = new CloneCommand();
             cloneCommand.setURI(remotePath);
