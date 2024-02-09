@@ -2,8 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GitHandlerTest {
 
@@ -58,5 +57,18 @@ public class GitHandlerTest {
 
         assertTrue(gh.checkout("12-set-up-build"));
         assertFalse(gh.checkout("i-do-not-exist"));
+    }
+
+    @Test
+    void testGetBranchName() {
+        GitHandler gh = new GitHandler();
+        if (!gh.getLocalRepoDirFile().exists()) {
+            gh.cloneRepo();
+        }
+
+        gh.checkout("main");
+        assertEquals(gh.getCurrentBranch(), "main");
+        gh.checkout("dummy-branch-for-testing");
+        assertEquals(gh.getCurrentBranch(), "main");
     }
 }

@@ -4,6 +4,7 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 
 import java.io.File;
 import java.io.IOException;
@@ -132,5 +133,15 @@ public class GitHandler {
 
     public boolean checkout(String branch) {
         return checkout(localRepoDirFile, branch);
+    }
+
+    public String getCurrentBranch() {
+        try (Git git = Git.open(localRepoDirFile)) {
+            Repository rep = git.getRepository();
+            return rep.getBranch();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return "error";
+        }
     }
 }
