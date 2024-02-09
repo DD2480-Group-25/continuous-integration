@@ -2,14 +2,8 @@ package org.example;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.merge.MergeStrategy;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,16 +82,55 @@ public class GitHandler {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
-                logger.info("deleting: " + file);
                 return FileVisitResult.CONTINUE;
             }
 
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
-                logger.info("deleting: " + dir);
                 return FileVisitResult.CONTINUE;
             }
         });
+    }
+
+    private boolean pull(File localRepoPath, String branch) {
+        boolean pullSuccessful = false;
+
+        try (Git git = Git.open(localRepoPath)) {
+            PullResult result = git.pull()
+                    .setRemoteBranchName(branch)
+                    .setRebase(false)
+                    .call();
+
+            logger.info(result.toString());
+            pullSuccessful = result.isSuccessful();
+        } catch (Exception e) {
+            logger.error("Error while running git pull on branch " + branch);
+            logger.error(e.getMessage());
+        }
+
+        return pullSuccessful;
+    }
+
+    public boolean pull(String branch) {
+        return pull(localRepoDirFile, branch);
+    }
+
+    private boolean checkout(File repositoryLocalPath, String branch) {
+        boolean actionCompleted = false;
+
+        try (Git git = Git.open(repositoryLocalPath)) {
+            Ref ref = git.checkout().setName(branch).call();
+            logger.info(ref.toString());
+            actionCompleted = true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return actionCompleted;
+    }
+
+    public boolean checkout(String branch) {
+        return checkout(localRepoDirFile, branch);
     }
 }
