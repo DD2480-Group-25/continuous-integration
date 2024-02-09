@@ -5,6 +5,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -32,11 +34,14 @@ public class GitHandler {
         this("git-repo/continuous-integration", "git@github.com:DD2480-Group-25/continuous-integration.git");
     }
 
+    public File getLocalRepoDirFile() {
+        return localRepoDirFile;
+    }
+
     public boolean isRepoCloned() {
         boolean result;
         try (Git git = Git.open(localRepoDirFile)) {
-            // TODO make sure the repo is valid
-            result = true;
+            result = true; // We assume that a clone operation won't be interrupted
         } catch (Exception e) {
             result = false;
             logger.error(e.getMessage());
