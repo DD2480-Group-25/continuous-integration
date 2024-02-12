@@ -1,6 +1,9 @@
 package org.example;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,19 +47,30 @@ public class GitHandlerTest {
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
         }
-        assertFalse(gh.pull("i-do-not-exit"));
+        assertFalse(gh.pull("i-do-not-exist"));
         assertTrue(gh.pull("main"));
     }
 
     @Test
     void testCheckoutToBranch() {
         GitHandler gh = new GitHandler();
+        gh.deleteLocalRepo();
+        gh.cloneRepo();
+
+
+        assertTrue(gh.fetch("dummy-branch-for-testing"));
+        assertTrue(gh.checkout("dummy-branch-for-testing"));
+        assertFalse(gh.checkout("i-do-not-exist"));
+    }
+
+    @Test
+    void testListBranches() throws GitAPIException, IOException {
+        GitHandler gh = new GitHandler();
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
         }
 
-        assertTrue(gh.checkout("12-set-up-build"));
-        assertFalse(gh.checkout("i-do-not-exist"));
+        assertTrue(gh.getBranchNames().contains("refs/heads/main"));
     }
 
     @Test
@@ -69,6 +83,6 @@ public class GitHandlerTest {
         gh.checkout("main");
         assertEquals(gh.getCurrentBranch(), "main");
         gh.checkout("dummy-branch-for-testing");
-        assertEquals(gh.getCurrentBranch(), "main");
+        assertEquals(gh.getCurrentBranch(), "dummy-branch-for-testing");
     }
 }
