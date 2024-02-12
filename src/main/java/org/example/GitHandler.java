@@ -123,8 +123,22 @@ public class GitHandler {
         boolean actionCompleted = false;
 
         try (Git git = Git.open(repositoryLocalPath)) {
-            Ref ref = git.checkout().setName(branch).call();
-            logger.info(ref.toString());
+            Ref result;
+            if (getBranchNames().contains("refs/heads/" + branch)) {
+                result = git
+                        .checkout()
+                        .setCreateBranch(false)
+                        .setName(branch)
+                        .call();
+            } else {
+                result = git
+                        .checkout()
+                        .setCreateBranch(true)
+                        .setName(branch)
+                        .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
+                        .setStartPoint("origin/" + branch).call();
+            }
+
             actionCompleted = true;
         } catch (Exception e) {
             logger.error(e.getMessage());
