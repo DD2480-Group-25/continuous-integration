@@ -4,7 +4,6 @@ import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.FetchResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.example.Main.logger;
@@ -105,10 +105,9 @@ public class GitHandler {
                     .setRebase(false)
                     .call();
 
-            logger.info(result.toString());
             pullSuccessful = result.isSuccessful();
         } catch (Exception e) {
-            logger.error("Error while running git pull on branch " + branch);
+            logger.error(String.format("Error while running git pull on branch %s", branch));
             logger.error(e.getMessage());
         }
 
@@ -123,20 +122,19 @@ public class GitHandler {
         boolean actionCompleted = false;
 
         try (Git git = Git.open(repositoryLocalPath)) {
-            Ref result;
             if (getBranchNames().contains("refs/heads/" + branch)) {
-                result = git
-                        .checkout()
-                        .setCreateBranch(false)
-                        .setName(branch)
-                        .call();
+                git
+                .checkout()
+                .setCreateBranch(false)
+                .setName(branch)
+                .call();
             } else {
-                result = git
-                        .checkout()
-                        .setCreateBranch(true)
-                        .setName(branch)
-                        .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
-                        .setStartPoint("origin/" + branch).call();
+                git
+                .checkout()
+                .setCreateBranch(true)
+                .setName(branch)
+                .setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM)
+                .setStartPoint("origin/" + branch).call();
             }
 
             actionCompleted = true;
@@ -152,26 +150,31 @@ public class GitHandler {
     }
 
     public List<String> getBranchNames() throws GitAPIException, IOException {
-        Git git = Git.open(localRepoDirFile);
-        List<String> names = new ArrayList<>();
-        List <Ref> branches = git.branchList().call();
+        try (Git git = Git.open(localRepoDirFile)) {
+            List<String> names = new ArrayList<>();
+            List <Ref> branches = git.branchList().call();
 
-        for (Ref b : branches) {
-            names.add(b.getName());
+            for (Ref b : branches) {
+                names.add(b.getName());
+            }
+
+            return names;
+        } catch (Exception e) {
+            logger.error(e.toString());
+            return new ArrayList<>(Collections.singleton(""));
         }
 
-        return names;
     }
 
     public boolean fetch(String branch) {
         boolean actionCompleted = false;
 
         try (Git git = Git.open(localRepoDirFile)) {
-            FetchResult res = git.fetch()
+            git.fetch()
                     .setRemote("origin")
                     .setRefSpecs("+refs/heads/" + branch + ":refs/remotes/origin/" + branch)
                     .call();
-            logger.info(res.toString());
+
             actionCompleted = true;
         } catch (Exception e) {
             logger.error(e.getMessage());

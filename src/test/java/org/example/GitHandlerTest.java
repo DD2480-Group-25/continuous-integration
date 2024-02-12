@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GitHandlerTest {
+class GitHandlerTest {
 
     @Test
     void testIsRepoCloned() {
@@ -81,8 +81,8 @@ public class GitHandlerTest {
         }
 
         gh.checkout("main");
-        assertEquals(gh.getCurrentBranch(), "main");
+        assertEquals("main", gh.getCurrentBranch());
         gh.checkout("dummy-branch-for-testing");
-        assertEquals(gh.getCurrentBranch(), "dummy-branch-for-testing");
+        assertEquals("dummy-branch-for-testing", gh.getCurrentBranch());
     }
 }
