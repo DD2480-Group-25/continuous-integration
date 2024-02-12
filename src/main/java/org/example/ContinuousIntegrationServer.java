@@ -10,7 +10,7 @@ import spark.Spark;
 import javax.servlet.http.HttpServletResponse;
 
 public class ContinuousIntegrationServer {
-    private static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
+    public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
 
     public static void main(String[] args) {
         Spark.port(8080);
