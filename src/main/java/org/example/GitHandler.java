@@ -1,10 +1,10 @@
 package org.example;
 
-import org.eclipse.jgit.api.CloneCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullResult;
+import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.FetchResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.example.Main.logger;
 
@@ -133,6 +135,35 @@ public class GitHandler {
 
     public boolean checkout(String branch) {
         return checkout(localRepoDirFile, branch);
+    }
+
+    public List<String> getBranchNames() throws GitAPIException, IOException {
+        Git git = Git.open(localRepoDirFile);
+        List<String> names = new ArrayList<>();
+        List <Ref> branches = git.branchList().call();
+
+        for (Ref b : branches) {
+            names.add(b.getName());
+        }
+
+        return names;
+    }
+
+    public boolean fetch(String branch) {
+        boolean actionCompleted = false;
+
+        try (Git git = Git.open(localRepoDirFile)) {
+            FetchResult res = git.fetch()
+                    .setRemote("origin")
+                    .setRefSpecs("+refs/heads/" + branch + ":refs/remotes/origin/" + branch)
+                    .call();
+            logger.info(res.toString());
+            actionCompleted = true;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+        return actionCompleted;
     }
 
     public String getCurrentBranch() {
