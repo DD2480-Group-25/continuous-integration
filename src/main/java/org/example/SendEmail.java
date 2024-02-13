@@ -53,7 +53,7 @@ public class SendEmail {
             message.setSubject("Build/test result for the last commit");
 
             // Now set the actual message
-            message.setText("content");
+            message.setText(content);
 
             // Send message
             Transport.send(message);
