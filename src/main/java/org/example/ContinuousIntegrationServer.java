@@ -1,5 +1,7 @@
 package org.example;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -31,15 +33,21 @@ public class ContinuousIntegrationServer {
             response.type("text/html;charset=utf-8");
             response.status(HttpServletResponse.SC_OK);
 
+            Gson gson = new Gson();
+
             String branch;
 
             // Check if the request is coming from GitHub
             String userAgent = request.headers("User-Agent");
 
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
+                // Parse JSON payload
+                JsonObject payload = gson.fromJson(request.body(), JsonObject.class);
+                System.out.println(payload);
+
                 // Read branch information
-                branch = request.queryParams("ref");
-                System.out.println("Changes were made on branch: " + branch);
+                String ref = payload.get("ref").getAsString();
+                System.out.println("Changes were made on branch: " + ref);
 
                 // Respond with a success message
                 response.status(200);
