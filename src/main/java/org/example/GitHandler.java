@@ -22,7 +22,7 @@ public class GitHandler {
     private final File localRepoDirFile;
     private final String remoteRepoURL;
 
-    private GitHandler(String localRepoPath, String remoteRepoURL) {
+    public GitHandler(String localRepoPath, String remoteRepoURL) {
         this.localRepoDirFile = new File(localRepoPath);
         this.remoteRepoURL = remoteRepoURL;
     }
