@@ -49,7 +49,7 @@ public class ContinuousIntegrationServer {
                 gh.pull(branch);
             } else {
                 logger.info(gh.getCurrentBranch());
-                return "Fatal error";
+                //return "Fatal error";
             }
 
             // --- 2. Building project ---
@@ -57,7 +57,9 @@ public class ContinuousIntegrationServer {
             // --- 3. Running tests ---
 
             // --- 4. Providing feedback
-
+            NotificatitonSystem ns = new NotificatitonSystem();
+            String returned = ns.resultCheck("pass","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", "warlcang", "test", "f8378f85e2f998fbb13c554208f88cbea448eb0b", "https://example.com/build/status");
+            logger.info(returned);
 
             logger.info("CI job done");
             return "CI job done";

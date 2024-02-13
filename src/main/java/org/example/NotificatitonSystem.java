@@ -11,16 +11,24 @@ import static org.example.Main.logger;
 
 public class NotificatitonSystem {
 
+    /*public static void main(String[] args) {
+        NotificatitonSystem ns = new NotificatitonSystem();
+        
+        String returned = ns.resultCheck("pass","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", "warlcang", "test", "f8378f85e2f998fbb13c554208f88cbea448eb0b", "https://example.com/build/status");
+        System.out.println(returned);
+    }*/
+
     public String resultCheck(String result, String token, String owner, String repo, String sha, String targetUrl) {
 
+        System.out.println("asdasdasdasdasd");
         String state;
         String description;
 
-        if (result == "pass") {
+        if (result.equals("pass")) {
             state = "success";
             description = "The build/test succeeded";
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
-        } else if (result == "failed") {
+        } else if (result.equals("failed")) {
             state = "fail";
             description = "The build/test failed";
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
@@ -58,18 +66,18 @@ public class NotificatitonSystem {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(requestURL))
                 //.header("Accept", "application/vnd.github+json")
-                .header("Accept", "application/vnd.github.v3+json")
+                .header("Accept", "application/vnd.github+json")
                 .header("Authorization", "Bearer " + token)
                 .header("X-GitHub-Api-Version", "2022-11-28")
                 .POST(BodyPublishers.ofString(requestBody))
                 .build();
+        
 
         try {
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             logger.info("GitHub status update response: " + response.statusCode() + " - " + response.body());
             System.out.println("GitHub status update response: " + response.statusCode() + " - " + response.body());
 
-            
             return "Response status code: " + response.statusCode() + "\nResponse body: " + response.body();
         } catch (Exception e) {
             e.printStackTrace();
