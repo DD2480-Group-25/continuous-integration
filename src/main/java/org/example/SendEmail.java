@@ -8,7 +8,7 @@ import jakarta.mail.internet.MimeMessage;
 
 public class SendEmail {
 
-    public static void main(String[] args) {
+    public static void sendEmail(String content) {
         // Recipient's email ID needs to be mentioned.
         String[] to = new String[]{"carlwang1124@outlook.com"};
 
@@ -50,10 +50,10 @@ public class SendEmail {
             }
 
             // Set Subject: header field
-            message.setSubject("This is the Subject Line!");
+            message.setSubject("Build/test result for the last commit");
 
             // Now set the actual message
-            message.setText("This is the actual message");
+            message.setText("content");
 
             // Send message
             Transport.send(message);
