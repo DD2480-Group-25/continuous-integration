@@ -22,13 +22,17 @@ public class NotificatitonSystem {
         String state;
         String description;
 
+        SendEmail se = new SendEmail();
+
         if (result.equals("pass")) {
             state = "success";
             description = "The build/test succeeded";
+            se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
         } else if (result.equals("failed")) {
             state = "fail";
             description = "The build/test failed";
+            se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
         }
 
