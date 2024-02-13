@@ -22,13 +22,17 @@ public class NotificatitonSystem {
         String state;
         String description;
 
+        SendEmail se = new SendEmail();
+
         if (result.equals("pass")) {
             state = "success";
             description = "The build/test succeeded";
+            se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
         } else if (result.equals("failed")) {
             state = "fail";
             description = "The build/test failed";
+            se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
         }
 
@@ -49,8 +53,8 @@ public class NotificatitonSystem {
          * Question: when the current status is failure/error?
          * Question: when the current status is pending? (Assume that we just change it).
          */
-        String context = "continuous-integration/spark";
 
+        String context = "continuous-integration/spark";
         String requestBody = String.format("{\n" +
                                             "    \"state\": \"%s\",\n" +
                                             "    \"target_url\": \"%s\",\n" +
@@ -76,7 +80,7 @@ public class NotificatitonSystem {
             logger.info("GitHub status update response: " + response.statusCode() + " - " + response.body());
             return "Response status code: " + response.statusCode() + "\nResponse body: " + response.body();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
             logger.error("Interrupted during the HTTP request", e);
             return "Failed to add Github status due to interruption";
         } catch (Exception e) { 
