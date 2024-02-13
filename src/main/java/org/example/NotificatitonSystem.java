@@ -75,9 +75,13 @@ public class NotificatitonSystem {
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             logger.info("GitHub status update response: " + response.statusCode() + " - " + response.body());
             return "Response status code: " + response.statusCode() + "\nResponse body: " + response.body();
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            return "Failed to add Github status";
+            logger.error("Interrupted during the HTTP request", e);
+            return "Failed to add Github status due to interruption";
+        } catch (Exception e) { 
+            logger.error("Exception during the HTTP request", e);
+            return "Failed to add GitHub status";
         }
     }
 }
