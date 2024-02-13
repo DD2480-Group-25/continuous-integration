@@ -8,7 +8,7 @@ import jakarta.mail.internet.MimeMessage;
 
 public class SendEmail {
 
-    public static void sendEmail(String content) {
+    public static sendEmail(String content) {
         // Recipient's email ID needs to be mentioned.
         String[] to = new String[]{"carlwang1124@outlook.com"};
 
