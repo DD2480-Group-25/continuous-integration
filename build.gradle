@@ -22,6 +22,9 @@ dependencies {
     implementation 'org.eclipse.jgit:org.eclipse.jgit:6.6.1.202309021850-r'
     // SSH support for JGit based on Apache MINA sshd
     implementation 'org.eclipse.jgit:org.eclipse.jgit.ssh.apache:6.4.0.202211300538-r'
+
+    //java mail
+    implementation 'com.sun.mail:jakarta.mail:2.0.1'
 }
 
 test {
