@@ -61,7 +61,13 @@ public class ContinuousIntegrationServer {
 
             // --- 4. Providing feedback
             NotificatitonSystem ns = new NotificatitonSystem();
-            String returned = ns.resultCheck("pass","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", "warlcang", "test", "f8378f85e2f998fbb13c554208f88cbea448eb0b", "https://example.com/build/status");
+            String result = "pass";
+            String token = "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";
+            String owner = "WarlCang";
+            String repo = "test";
+            String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
+            String targetUrl = "https://example.com/build/status";
+            String returned = ns.resultCheck(result,token, owner, repo, sha, targetUrl);
             logger.info(returned);
 
             logger.info("CI job done");
