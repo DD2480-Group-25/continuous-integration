@@ -16,7 +16,7 @@ public class Build {
             processBuilder.command("./gradlew", "build");
 
             Process process = processBuilder.start();
-
+             
             StringBuilder output = new StringBuilder();
             boolean buildStatus = true;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
