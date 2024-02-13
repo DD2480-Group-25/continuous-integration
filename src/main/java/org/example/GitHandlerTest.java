@@ -1,16 +1,14 @@
 package org.example;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.jupiter.api.Test;
-
+import org.junit.Test;
+import static org.junit.Assert.*;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class GitHandlerTest {
+public class GitHandlerTest {
 
     @Test
-    void testIsRepoCloned() {
+    public void testIsRepoCloned() {
         GitHandler gh = new GitHandler();
         gh.deleteLocalRepo();
         assertFalse(gh.isRepoCloned());
@@ -19,7 +17,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testCloneRepo() {
+    public void testCloneRepo() {
         GitHandler gh = new GitHandler();
         gh.deleteLocalRepo();
         assertFalse(gh.getLocalRepoDirFile().exists());
@@ -30,7 +28,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testDeleteRepo() {
+    public void testDeleteRepo() {
         GitHandler gh = new GitHandler();
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
@@ -42,7 +40,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testGitPull() {
+    public void testGitPull() {
         GitHandler gh = new GitHandler();
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
@@ -52,7 +50,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testCheckoutToBranch() {
+    public void testCheckoutToBranch() {
         GitHandler gh = new GitHandler();
         gh.deleteLocalRepo();
         gh.cloneRepo();
@@ -64,7 +62,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testListBranches() throws GitAPIException, IOException {
+    public void testListBranches() throws GitAPIException, IOException {
         GitHandler gh = new GitHandler();
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
@@ -74,7 +72,7 @@ class GitHandlerTest {
     }
 
     @Test
-    void testGetBranchName() {
+    public void testGetBranchName() {
         GitHandler gh = new GitHandler();
         if (!gh.getLocalRepoDirFile().exists()) {
             gh.cloneRepo();
