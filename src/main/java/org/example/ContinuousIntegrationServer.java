@@ -31,6 +31,23 @@ public class ContinuousIntegrationServer {
             response.type("text/html;charset=utf-8");
             response.status(HttpServletResponse.SC_OK);
 
+            String branch;
+
+            // Check if the request is coming from GitHub
+            String userAgent = request.headers("User-Agent");
+
+            if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
+                // Read branch information
+                branch = request.queryParams("ref");
+                System.out.println("Changes were made on branch: " + branch);
+
+                // Respond with a success message
+                response.status(200);
+            } else {
+                response.status(403); // Forbidden
+                return "Request is not from GitHub.";
+            }
+
 
             // --- 1. Fetching changes ---
 
@@ -38,19 +55,17 @@ public class ContinuousIntegrationServer {
 
             // Maybe we should delete the repo completely each time to have a clean repo
             // We must also think about what happens if two concurrent request arrive at the same time, or maybe we don't care idk
-            gh.deleteLocalRepo();
-            gh.cloneRepo();
-
-            String branch = "dummy-branch-for-testing"; // In the future get the name from the request
-
-            gh.fetch(branch);
-
-            if (gh.checkout(branch)) {
-                gh.pull(branch);
-            } else {
-                logger.info(gh.getCurrentBranch());
-                return "Fatal error";
-            }
+//            gh.deleteLocalRepo();
+//            gh.cloneRepo();
+//
+//            gh.fetch(branch);
+//
+//            if (gh.checkout(branch)) {
+//                gh.pull(branch);
+//            } else {
+//                logger.info(gh.getCurrentBranch());
+//                return "Fatal error";
+//            }
 
             // --- 2. Building project ---
 
