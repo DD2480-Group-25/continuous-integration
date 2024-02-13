@@ -39,10 +39,7 @@ public class ContinuousIntegrationServer {
             // Maybe we should delete the repo completely each time to have a clean repo
             // We must also think about what happens if two concurrent request arrive at the same time, or maybe we don't care idk
             gh.deleteLocalRepo();
-
-            if (!gh.isRepoCloned()) {
-                gh.cloneRepo();
-            }
+            gh.cloneRepo();
 
             String branch = "dummy-branch-for-testing"; // In the future get the name from the request
 
