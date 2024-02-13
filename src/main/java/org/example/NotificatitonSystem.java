@@ -19,8 +19,6 @@ public class NotificatitonSystem {
     }*/
 
     public String resultCheck(String result, String token, String owner, String repo, String sha, String targetUrl) {
-
-        System.out.println("asdasdasdasdasd");
         String state;
         String description;
 
@@ -76,12 +74,9 @@ public class NotificatitonSystem {
         try {
             HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
             logger.info("GitHub status update response: " + response.statusCode() + " - " + response.body());
-            System.out.println("GitHub status update response: " + response.statusCode() + " - " + response.body());
-
             return "Response status code: " + response.statusCode() + "\nResponse body: " + response.body();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to add Github status");
             return "Failed to add Github status";
         }
     }
