@@ -9,6 +9,7 @@ import spark.Spark;
 import java.io.File;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 public class ContinuousIntegrationServer {
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
@@ -32,7 +33,34 @@ public class ContinuousIntegrationServer {
             // 1. Clone your repository
             // 2. Compile the code
 
+            // --- 1. Fetching changes ---
+
+            GitHandler gh = new GitHandler(); // change with correct repo parameters
+
+            // Maybe we should delete the repo completely each time to have a clean repo
+            // We must also think about what happens if two concurrent request arrive at the same time, or maybe we don't care idk
+            gh.deleteLocalRepo();
+            gh.cloneRepo();
+
+            String branch = "dummy-branch-for-testing"; // In the future get the name from the request
+
+            gh.fetch(branch);
+
+            if (gh.checkout(branch)) {
+                gh.pull(branch);
+            } else {
+                logger.info(gh.getCurrentBranch());
+                return "Fatal error";
+            }
+
+            // --- 2. Building project ---
+          
             runBuild(gh);
+
+            // --- 3. Running tests ---
+
+            // --- 4. Providing feedback
+
 
             logger.info("CI job done");
             return "CI job done";
