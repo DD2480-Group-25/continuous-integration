@@ -99,6 +99,8 @@ public class GitHandler {
     private boolean pull(File localRepoPath, String branch) {
         boolean pullSuccessful = false;
 
+        logger.info(String.format("Trying to pull changes from branch %s", branch));
+
         try (Git git = Git.open(localRepoPath)) {
             PullResult result = git.pull()
                     .setRemoteBranchName(branch)
@@ -111,6 +113,10 @@ public class GitHandler {
             logger.error(e.getMessage());
         }
 
+        if (pullSuccessful) {
+            logger.info("Pull was successful");
+        }
+
         return pullSuccessful;
     }
 
@@ -120,6 +126,8 @@ public class GitHandler {
 
     private boolean checkout(File repositoryLocalPath, String branch) {
         boolean actionCompleted = false;
+
+        logger.info(String.format("Trying to checkout on branch %s", branch));
 
         try (Git git = Git.open(repositoryLocalPath)) {
             if (getBranchNames().contains("refs/heads/" + branch)) {
@@ -137,6 +145,7 @@ public class GitHandler {
                 .setStartPoint("origin/" + branch).call();
             }
 
+            logger.info(String.format("Checked out successfully on branch %s", getCurrentBranch()));
             actionCompleted = true;
         } catch (Exception e) {
             logger.error(e.getMessage());
