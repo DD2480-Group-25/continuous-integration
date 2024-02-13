@@ -34,7 +34,7 @@ public class ContinuousIntegrationServer {
             // For example:
             // 1. Clone your repository
             // 2. Compile the code
-            // Bla bla
+            // Bla bla 2
 
             logger.info("CI job done");
             return "CI job done";
