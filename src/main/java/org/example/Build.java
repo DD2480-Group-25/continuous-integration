@@ -42,6 +42,7 @@ public class Build {
                         buildStatus = false;
                     }
                 }
+                System.out.println(output);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

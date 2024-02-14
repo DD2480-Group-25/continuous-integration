@@ -36,23 +36,24 @@ public class ContinuousIntegrationServer {
 
             // --- 0. Fetching and parsing payload ---
 
-            String payload = request.body();
             Gson gson = new Gson();
 
-            JsonObject jsonPayload = gson.fromJson(payload, JsonObject.class);
-            //which branch got pushed?
-            String ref = jsonPayload.get("ref").getAsString();
-            String sha = jsonPayload.get("after").getAsString();
-
             String repo = "dummy-repo";
-            String owner = "ItsRkaj";
+            String owner = "goodtimeswithpaul";
 
-            String branch;
+            String branch, sha;
 
             // Check if the request is coming from GitHub
             String userAgent = request.headers("User-Agent");
 
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
+                String payload = request.body();
+
+                JsonObject jsonPayload = gson.fromJson(payload, JsonObject.class);
+
+                String ref = jsonPayload.get("ref").getAsString();
+                sha = jsonPayload.get("after").getAsString();
+
                 // Parse JSON payload
                 branch = ref.replace("refs/heads/", "");
                 System.out.println("Incoming changes on branch: " + branch);
@@ -68,10 +69,12 @@ public class ContinuousIntegrationServer {
 
             System.out.println("Fetching changes");
 
-            GitHandler gh = new GitHandler("git-repo/dummy-repo", "git@github.com:ItsRkaj/dummy-repo.git");
+            GitHandler gh = new GitHandler("git-repo/dummy-repo", "git@github.com:goodtimeswithpaul/dummy-repo.git");
 
             gh.deleteLocalRepo();
             gh.cloneRepo();
+
+            gh.fetch(branch);
 
             if (gh.checkout(branch)) {
                 gh.pull(branch);
@@ -114,7 +117,7 @@ public class ContinuousIntegrationServer {
     /**
      * Executes a Gradle build for a Git repo.
      *
-     * @param gitHandler the GitHandler object providing access to the Git repo
+     * @param gh the GitHandler object providing access to the Git repo
      */
 
     public static boolean runBuild(GitHandler gh) {

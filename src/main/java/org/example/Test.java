@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 
 public class Test {
 
@@ -14,6 +13,8 @@ public class Test {
             processBuilder.directory(projectDir);
 
             processBuilder.command("./gradlew", "test");
+            processBuilder.redirectErrorStream(true); // This is used to merge the error and input stream into one
+
 
             Process process = processBuilder.start();
 
@@ -27,9 +28,12 @@ public class Test {
                         testStatus = false;
                     }
                 }
+                System.out.println(output);
+            }  catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
-            process.waitFor(20, TimeUnit.SECONDS);
+            process.waitFor();
 
             return new TestResult(testStatus, output.toString());
         } catch (IOException | InterruptedException e) {
