@@ -44,6 +44,9 @@ We distributed the work in the following way:
 
 **Rikard**: Gradle set up, testing
 
+**REMARKBLE**: The notification system is not using a popular tool(such as Jenkins), to easily update the commit status. It uses the so called "old-fashion" way to make HTTP request
+using a client due to learning purpose. In order to achieve this, the provided Github commit status documentation and java HTTP library is repeatedly accssed. The learning outcome is
+that the authors gained better knowledge of HTTP request and response in practice.  
 ### Essence Evaluation of Our Team
 
 In evaluating our team in the essence standard, we believe that we are currently in the collaborating stage. We believe that we have passed the seeded stage as the composition of the team has been clearly defined and each member's responsibilities regarding this lab were outlined after the first meeting. We did this by assigning each member with a specific milestone that related to the different aspects of the lab. For example, one member worked on implementing the cloning/fetching aspect while another worked on the update report which the CI sends. We decided on not having a set leader role and rather delegated responsibilities evenly. Furthermore, we believe that we have passed the formed stage as we have defined communication mechanisms and team members are accepting their work. In regards to the collaborating stage, we are starting to work as one cohesive unit, though our tasks have been divided among us. We are focused on achieving the mission and try to encourage open and honest communication among us by requiring at least one review on all pull requests.
