@@ -22,19 +22,33 @@ public class GitHandler {
     private final File localRepoDirFile;
     private final String remoteRepoURL;
 
+    /**
+     * Constructor for the GitHandler Class
+     * @param localRepoPath the local path where the repo will be cloned
+     * @param remoteRepoURL the url of the repo
+     */
     public GitHandler(String localRepoPath, String remoteRepoURL) {
         this.localRepoDirFile = new File(localRepoPath);
         this.remoteRepoURL = remoteRepoURL;
     }
 
+    /**
+     * Default constructor for the GitHandler Class used for testing
+     */
     public GitHandler() {
         this("git-repo/continuous-integration", "git@github.com:DD2480-Group-25/continuous-integration.git");
     }
 
+    /**
+     * Getter for the repo File
+     */
     public File getLocalRepoDirFile() {
         return localRepoDirFile;
     }
 
+    /**
+     * Returns true if the repo is present locally
+     */
     public boolean isRepoCloned() {
         boolean result;
         try (Git git = Git.open(localRepoDirFile)) {
@@ -47,6 +61,11 @@ public class GitHandler {
         return result;
     }
 
+    /**
+     * Clones the remote repo locally
+     * @param remotePath the url of the repo
+     * @param localPath the local path to the folder where the repo will be cloned
+     */
     private void cloneRepo(String remotePath, File localPath) {
         try {
             CloneCommand cloneCommand = new CloneCommand();
@@ -59,6 +78,9 @@ public class GitHandler {
         }
     }
 
+    /**
+     * Clones the remote repo locally
+     */
     public void cloneRepo() {
         cloneRepo(remoteRepoURL, localRepoDirFile);
     }
@@ -96,6 +118,12 @@ public class GitHandler {
         });
     }
 
+    /**
+     * Pulls changes on the specified branch
+     * @param localRepoPath the location of the local repo
+     * @param branch the branch to fetch changes from
+     * @return true if the pull was successful
+     */
     private boolean pull(File localRepoPath, String branch) {
         boolean pullSuccessful = false;
 
@@ -120,10 +148,20 @@ public class GitHandler {
         return pullSuccessful;
     }
 
+    /**
+     * Pulls changes on the specified branch
+     * @return true if the pull was successful
+     */
     public boolean pull(String branch) {
         return pull(localRepoDirFile, branch);
     }
 
+    /**
+     * Checks out the specified branch
+     * @param repositoryLocalPath the path to the local repo
+     * @param branch the branch to checkout
+     * @return true if the checkout was successful
+     */
     private boolean checkout(File repositoryLocalPath, String branch) {
         boolean actionCompleted = false;
 
@@ -154,10 +192,19 @@ public class GitHandler {
         return actionCompleted;
     }
 
+    /**
+     * Checks out the specified branch
+     * @param branch the branch to checkout
+     * @return true if successful
+     */
     public boolean checkout(String branch) {
         return checkout(localRepoDirFile, branch);
     }
 
+    /**
+     * Allows to list the branch names
+     * @return the list of the branches available in the local repo
+     */
     public List<String> getBranchNames() throws GitAPIException, IOException {
         try (Git git = Git.open(localRepoDirFile)) {
             List<String> names = new ArrayList<>();
@@ -175,6 +222,11 @@ public class GitHandler {
 
     }
 
+    /**
+     * Fetches the changes on the specified branch
+     * @param branch the branch we are interested in
+     * @return true if successful
+     */
     public boolean fetch(String branch) {
         boolean actionCompleted = false;
 
@@ -192,6 +244,10 @@ public class GitHandler {
         return actionCompleted;
     }
 
+    /**
+     * Getter for the current branch as a string
+     * @return the current branch as a string
+     */
     public String getCurrentBranch() {
         try (Git git = Git.open(localRepoDirFile)) {
             Repository rep = git.getRepository();
