@@ -6,18 +6,29 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 
+/**
+ * Provides functionality to send email notifications through an SMTP server, 
+ * specifically used for notifying users about the results of build or test operations.
+ */
 public class SendEmail {
+
+    /**
+     * Sends an email to a set of receivers(the group members).
+     * SMTP with STARTTLS are used to set up the email session.
+     * The construction of the email is also here.
+     * It is designed for sending notifications about build/test results.
+     *
+     * @param content The body of the email message, containing build/test result.
+     */
 
     public void sendEmail(String content) {
         // Recipient's email ID needs to be mentioned.
         String[] to = new String[]{"carlwang1124@outlook.com"};
 
-        // Sender's email ID and password needs to be mentioned
+        // Needed info
         String from = "carlwang@kth.se";
-        final String username = "carlwang"; // username for email
-        final String password = "A13579jiahao"; // password for email
-
-        // Assuming you are sending email through Gmail
+        final String username = "carlwang"; 
+        final String password = "A13579jiahao"; 
         String host = "smtp.kth.se";
 
         // Get system properties
@@ -27,7 +38,7 @@ public class SendEmail {
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true"); // Enable STARTTLS
+        properties.put("mail.smtp.starttls.enable", "true");
 
         // Get the Session object
         Session session = Session.getInstance(properties,

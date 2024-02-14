@@ -99,12 +99,6 @@ public class ContinuousIntegrationServer {
             NotificatitonSystem ns = new NotificatitonSystem();
             String result = buildSuccessful ? "pass" : "failed";
             String token = "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";
-            //String owner = "WarlCang";
-            //String owner = "DD2480-Group-25";
-            //String repo = "test";
-            //String repo = "continuous-integration";
-            //String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
-            //String sha = jsonPayload.get("after").getAsString();
             String targetUrl = "https://example.com/build/status";
             String returned = ns.resultCheck(result, token, owner, repo, sha, targetUrl);
             logger.info(returned);
