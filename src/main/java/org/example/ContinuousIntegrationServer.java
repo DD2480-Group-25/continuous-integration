@@ -13,11 +13,6 @@ import spark.Spark;
 import java.io.File;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Objects;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 public class ContinuousIntegrationServer {
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
@@ -48,14 +43,9 @@ public class ContinuousIntegrationServer {
             //which branch got pushed?
             String ref = jsonPayload.get("ref").getAsString();
             String sha = jsonPayload.get("after").getAsString();
-            // Assuming 'payload' is a String containing the JSON payload from the webhook
-            //JsonObject payloadObj = JsonParser.parseString(payload).getAsJsonObject();
+
             String repo = "dummy-repo";
             String owner = "ItsRkaj";
-            // Perform CI tasks here
-            // For example:
-            // 1. Clone your repository
-            // 2. Compile the code
 
             String branch;
 
@@ -65,7 +55,7 @@ public class ContinuousIntegrationServer {
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
                 // Parse JSON payload
                 branch = ref.replace("refs/heads/", "");
-                System.out.println("Changes were just made on branch: " + branch);
+                System.out.println("Incoming changes on branch: " + branch);
 
                 // Respond with a success message
                 response.status(200);
@@ -76,6 +66,8 @@ public class ContinuousIntegrationServer {
 
             // --- 1. Fetching changes ---
 
+            System.out.println("Fetching changes");
+
             GitHandler gh = new GitHandler("git-repo/dummy-repo", "git@github.com:ItsRkaj/dummy-repo.git");
 
             gh.deleteLocalRepo();
@@ -83,28 +75,33 @@ public class ContinuousIntegrationServer {
 
             if (gh.checkout(branch)) {
                 gh.pull(branch);
+                System.out.println("Changes fetched successfully");
             } else {
                 logger.info(gh.getCurrentBranch());
                 return "Fatal error";
             }
 
             // --- 2. Building project ---
-          
+
+            System.out.println("Trying to build the project");
+
             boolean buildSuccessful = runBuild(gh);
 
+            System.out.println("Build finished");
+
             // --- 3. Running tests ---
-            runTest(gh);
+
+            System.out.println("Trying to run the project's unit tests");
+
+            boolean testSuccessful = runTest(gh);
+
+            System.out.println("Testing finished");
 
             // --- 4. Providing feedback
+            System.out.println("Sending feedback");
             NotificatitonSystem ns = new NotificatitonSystem();
-            String result = buildSuccessful ? "pass" : "failed";
-            String token = "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";
-            //String owner = "WarlCang";
-            //String owner = "DD2480-Group-25";
-            //String repo = "test";
-            //String repo = "continuous-integration";
-            //String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
-            //String sha = jsonPayload.get("after").getAsString();
+            String result = buildSuccessful && testSuccessful ? "pass" : "failed";
+            String token = "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";
             String targetUrl = "https://example.com/build/status";
             String returned = ns.resultCheck(result, token, owner, repo, sha, targetUrl);
             logger.info(returned);
@@ -139,11 +136,11 @@ public class ContinuousIntegrationServer {
         }
     }
 
-    public static void runTest(GitHandler gh) {
+    public static boolean runTest(GitHandler gh) {
         try {
             if (!gh.isRepoCloned()) {
                 logger.error("repo not cloned");
-                return;
+                return false;
             }
 
             File projectDir = gh.getLocalRepoDirFile();
@@ -152,11 +149,14 @@ public class ContinuousIntegrationServer {
 
             if (testResult.isSuccess()) {
                 logger.info("Test successful");
+                return true;
             } else {
                 logger.error("Test failed: {}", testResult.getOutput());
+                return false;
             }
         } catch (Exception e) {
             logger.error("Error occurred during build: {}", e.getMessage());
+            return false;
         }
     }
 }
