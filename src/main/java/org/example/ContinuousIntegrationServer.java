@@ -57,7 +57,6 @@ public class ContinuousIntegrationServer {
             // For example:
             // 1. Clone your repository
             // 2. Compile the code
-            Gson gson = new Gson();
 
             String branch;
 
@@ -66,10 +65,6 @@ public class ContinuousIntegrationServer {
 
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
                 // Parse JSON payload
-                JsonObject payload = gson.fromJson(request.body(), JsonObject.class);
-
-                // Read branch information
-                String ref = payload.get("ref").getAsString();
                 branch = ref.replace("refs/heads/", "");
                 System.out.println("Changes were made on branch: " + branch);
 
