@@ -115,6 +115,12 @@ public class ContinuousIntegrationServer {
         }
     }
 
+    /**
+     * Executes a Gradle build for a Git repo.
+     *
+     * @param gitHandler the GitHandler object providing access to the Git repo
+     */
+
     public static void runBuild(GitHandler gh) {
         try {
 
@@ -126,8 +132,6 @@ public class ContinuousIntegrationServer {
             File projectDir = gh.getLocalRepoDirFile();
             Build build = new Build();
             Build.BuildResult buildResult = build.runGradleBuild(projectDir);
-
-            System.out.println("4");
 
             if (buildResult.isSuccess()) {
                 logger.info("Build successful");
