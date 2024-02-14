@@ -9,7 +9,7 @@ import java.io.IOException;
 class BuildTest {
 
     @Test
-    void testRunGradleBuild_Success() throws IOException, InterruptedException {
+    void testRunGradleBuild_Success() {
         Build build = new Build();
         GitHandler gh = new GitHandler("src/test/CI-build-test-Pass", "git@github.com:annelibogren/CI-build-test-Pass.git");
 
@@ -26,7 +26,7 @@ class BuildTest {
     }
 
     @Test
-    void testRunGradleBuild_Failure() throws IOException, InterruptedException {
+    void testRunGradleBuild_Failure() {
         Build build = new Build();
         GitHandler gh = new GitHandler("src/test/CI-build-test-Fail", "git@github.com:annelibogren/CI-build-test-Fail.git");
 
