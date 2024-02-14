@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class ContinuousIntegrationServer {
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
@@ -41,6 +42,10 @@ public class ContinuousIntegrationServer {
             //which branch got pushed?
             String ref = jsonPayload.get("ref").getAsString();
             String sha = jsonPayload.get("after").getAsString();
+            // Assuming 'payload' is a String containing the JSON payload from the webhook
+            JsonObject payloadObj = JsonParser.parseString(payload).getAsJsonObject();
+            String repo = payloadObj.getAsJsonObject("repository").get("name").getAsString();
+            String owner = payloadObj.getAsJsonObject("repository").get("owner").getAsString();
             // Perform CI tasks here
             // For example:
             // 1. Clone your repository
@@ -76,8 +81,10 @@ public class ContinuousIntegrationServer {
             NotificatitonSystem ns = new NotificatitonSystem();
             String result = "pass";
             String token = "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";
-            String owner = "WarlCang";
-            String repo = "test";
+            //String owner = "WarlCang";
+            //String owner = "DD2480-Group-25";
+            //String repo = "test";
+            //String repo = "continuous-integration";
             //String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
             //String sha = jsonPayload.get("after").getAsString();
             String targetUrl = "https://example.com/build/status";
