@@ -49,7 +49,7 @@ public class ContinuousIntegrationServer {
                 // Read branch information
                 String ref = payload.get("ref").getAsString();
                 branch = ref.replace("refs/heads/", "");
-                System.out.println("Changes were made on branch: " + branch);
+                System.out.println("Changes were just made on branch: " + branch);
 
                 // Respond with a success message
                 response.status(200);
@@ -64,8 +64,6 @@ public class ContinuousIntegrationServer {
 
             gh.deleteLocalRepo();
             gh.cloneRepo();
-
-            gh.fetch(branch);
 
             if (gh.checkout(branch)) {
                 gh.pull(branch);
@@ -99,6 +97,8 @@ public class ContinuousIntegrationServer {
             File projectDir = gh.getLocalRepoDirFile();
             Build build = new Build();
             Build.BuildResult buildResult = build.runGradleBuild(projectDir);
+
+            System.out.println("4");
 
             if (buildResult.isSuccess()) {
                 logger.info("Build successful");
