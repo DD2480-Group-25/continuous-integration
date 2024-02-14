@@ -2,6 +2,7 @@ package org.example;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -9,24 +10,22 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 
+import java.io.File;
+
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 public class ContinuousIntegrationServer {
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
-
     public static void main(String[] args) {
         Spark.port(8080);
-
         Spark.get("/", (req, res) -> {
             res.type("text/html;charset=utf-8");
             res.status(HttpServletResponse.SC_OK);
             return "Hello, Group 25!";
         });
-
         Spark.post("/webhook", new WebhookHandler());
     }
-
     private static class WebhookHandler implements Route {
 
         // --- 0. Getting information from the payload ---
@@ -59,7 +58,6 @@ public class ContinuousIntegrationServer {
                 return "Request is not from GitHub.";
             }
 
-
             // --- 1. Fetching changes ---
 
             GitHandler gh = new GitHandler(); // change with correct repo parameters
@@ -77,6 +75,8 @@ public class ContinuousIntegrationServer {
             }
 
             // --- 2. Building project ---
+          
+            runBuild(gh);
 
             // --- 3. Running tests ---
 
@@ -87,4 +87,27 @@ public class ContinuousIntegrationServer {
             return "CI job done";
         }
     }
+
+    public static void runBuild(GitHandler gh) {
+        try {
+
+            if (!gh.isRepoCloned()) {
+                logger.error("repo not cloned");
+                return;
+            }
+
+            File projectDir = gh.getLocalRepoDirFile();
+            Build build = new Build();
+            Build.BuildResult buildResult = build.runGradleBuild(projectDir);
+
+            if (buildResult.isSuccess()) {
+                logger.info("Build successful");
+            } else {
+                logger.error("Build failed: {}", buildResult.getOutput());
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred during build: {}", e.getMessage());
+        }
+    }
+
 }
