@@ -60,7 +60,7 @@ public class ContinuousIntegrationServer {
 
             // --- 1. Fetching changes ---
 
-            GitHandler gh = new GitHandler(); // change with correct repo parameters
+            GitHandler gh = new GitHandler("git-repo/dummy-repo", "git@github.com:ItsRkaj/dummy-repo.git");
 
             gh.deleteLocalRepo();
             gh.cloneRepo();
