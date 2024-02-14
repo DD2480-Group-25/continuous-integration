@@ -14,10 +14,12 @@ public class Build {
             processBuilder.directory(projectDir);
 
             processBuilder.command("./gradlew", "build");
+            processBuilder.redirectErrorStream(true); // This is used to merge the error and input stream into one
 
             Process process = processBuilder.start();
              
             StringBuilder output = new StringBuilder();
+
             boolean buildStatus = true;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
@@ -27,6 +29,8 @@ public class Build {
                         buildStatus = false;
                     }
                 }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
 
             process.waitFor(20, TimeUnit.SECONDS);
