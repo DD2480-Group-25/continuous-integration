@@ -93,6 +93,7 @@ public class ContinuousIntegrationServer {
             boolean buildSuccessful = runBuild(gh);
 
             // --- 3. Running tests ---
+            runTest(gh);
 
             // --- 4. Providing feedback
             NotificatitonSystem ns = new NotificatitonSystem();
@@ -138,4 +139,24 @@ public class ContinuousIntegrationServer {
         }
     }
 
+    public static void runTest(GitHandler gh) {
+        try {
+            if (!gh.isRepoCloned()) {
+                logger.error("repo not cloned");
+                return;
+            }
+
+            File projectDir = gh.getLocalRepoDirFile();
+            Test test = new Test();
+            Test.TestResult testResult = test.runGradleTest(projectDir);
+
+            if (testResult.isSuccess()) {
+                logger.info("Test successful");
+            } else {
+                logger.error("Test failed: {}", testResult.getOutput());
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred during build: {}", e.getMessage());
+        }
+    }
 }
