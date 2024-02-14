@@ -30,7 +30,7 @@ public class NotificatitonSystem {
             se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
         } else if (result.equals("failed")) {
-            state = "fail";
+            state = "failure";
             description = "The build/test failed";
             se.sendEmail(description);
             return statusHandler(token, owner, repo, sha, state, targetUrl, description);
