@@ -44,9 +44,19 @@ We distributed the work in the following way:
 
 **Rikard**: Gradle set up, testing
 
-**REMARKBLE**: The notification system is not using a popular tool(such as Jenkins), to easily update the commit status. It uses the so called "old-fashion" way to make HTTP request
-using a client due to learning purpose. In order to achieve this, the provided Github commit status documentation and java HTTP library is repeatedly accssed. The learning outcome is
+**REMARKBLE**: The notification system is not using a popular tool (such as Jenkins), to easily update the commit status. It uses the so called "old-fashion" way to make HTTP request
+using a client due to learning purpose. In order to achieve this, the provided Github commit status documentation and java HTTP library is repeatedly accessed. The learning outcome is
 that the authors gained better knowledge of HTTP request and response in practice.  
+
+Moreover, some extra work has been put in implementing the part about the Git handling. Indeed, it would have been 
+easier to simply issue commands using a process builder, call the 2-3 commands necessary and be done with it.
+The problem with this method is that it is very easily injectable by a malevolent actor. All one would have to do is 
+to create a fake webhook request in which the branch command is an escape character followed by a malicious command
+(like some one-liner opening a reverse shell), and an attacker would be able to take control of the machine running the
+CI. That is why we thought it was important to do things in a clean fashion using a well-established library (JGit), in
+order to meet basic security criteria, which are critical in a production environment. This allowed us to practice reasoning 
+about web security, as well as to use libraries written by other developers instead of reimplementing things in a 
+clumsy and dangerous way.
 ### Essence Evaluation of Our Team
 
 In evaluating our team in the essence standard, we believe that we are currently in the collaborating stage. We believe that we have passed the seeded stage as the composition of the team has been clearly defined and each member's responsibilities regarding this lab were outlined after the first meeting. We did this by assigning each member with a specific milestone that related to the different aspects of the lab. For example, one member worked on implementing the cloning/fetching aspect while another worked on the update report which the CI sends. We decided on not having a set leader role and rather delegated responsibilities evenly. Furthermore, we believe that we have passed the formed stage as we have defined communication mechanisms and team members are accepting their work. In regards to the collaborating stage, we are starting to work as one cohesive unit, though our tasks have been divided among us. We are focused on achieving the mission and try to encourage open and honest communication among us by requiring at least one review on all pull requests.
