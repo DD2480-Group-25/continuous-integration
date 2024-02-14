@@ -1,4 +1,8 @@
 package org.example;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -23,26 +27,43 @@ public class ContinuousIntegrationServer {
         Spark.post("/webhook", new WebhookHandler());
     }
     private static class WebhookHandler implements Route {
+
+        // --- 0. Getting information from the payload ---
+
         @Override
         public Object handle(Request request, Response response) {
             response.type("text/html;charset=utf-8");
             response.status(HttpServletResponse.SC_OK);
 
-            // Perform CI tasks here
-            // For example:
-            // 1. Clone your repository
-            // 2. Compile the code
+            Gson gson = new Gson();
+
+            String branch;
+
+            // Check if the request is coming from GitHub
+            String userAgent = request.headers("User-Agent");
+
+            if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
+                // Parse JSON payload
+                JsonObject payload = gson.fromJson(request.body(), JsonObject.class);
+
+                // Read branch information
+                String ref = payload.get("ref").getAsString();
+                branch = ref.replace("refs/heads/", "");
+                System.out.println("Changes were made on branch: " + branch);
+
+                // Respond with a success message
+                response.status(200);
+            } else {
+                response.status(403); // Forbidden
+                return "Request is not from GitHub.";
+            }
 
             // --- 1. Fetching changes ---
 
             GitHandler gh = new GitHandler(); // change with correct repo parameters
 
-            // Maybe we should delete the repo completely each time to have a clean repo
-            // We must also think about what happens if two concurrent request arrive at the same time, or maybe we don't care idk
             gh.deleteLocalRepo();
             gh.cloneRepo();
-
-            String branch = "dummy-branch-for-testing"; // In the future get the name from the request
 
             gh.fetch(branch);
 
