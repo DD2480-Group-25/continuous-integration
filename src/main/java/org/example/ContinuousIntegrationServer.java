@@ -28,6 +28,9 @@ public class ContinuousIntegrationServer {
     }
 
     private static class WebhookHandler implements Route {
+
+        // --- 0. Getting information from the payload ---
+
         @Override
         public Object handle(Request request, Response response) {
             response.type("text/html;charset=utf-8");
@@ -43,11 +46,11 @@ public class ContinuousIntegrationServer {
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
                 // Parse JSON payload
                 JsonObject payload = gson.fromJson(request.body(), JsonObject.class);
-                System.out.println(payload);
 
                 // Read branch information
                 String ref = payload.get("ref").getAsString();
-                System.out.println("Changes were made on branch: " + ref);
+                branch = ref.replace("refs/heads/", "");
+                System.out.println("Changes were made on branch: " + branch);
 
                 // Respond with a success message
                 response.status(200);
@@ -61,19 +64,17 @@ public class ContinuousIntegrationServer {
 
             GitHandler gh = new GitHandler(); // change with correct repo parameters
 
-            // Maybe we should delete the repo completely each time to have a clean repo
-            // We must also think about what happens if two concurrent request arrive at the same time, or maybe we don't care idk
-//            gh.deleteLocalRepo();
-//            gh.cloneRepo();
-//
-//            gh.fetch(branch);
-//
-//            if (gh.checkout(branch)) {
-//                gh.pull(branch);
-//            } else {
-//                logger.info(gh.getCurrentBranch());
-//                return "Fatal error";
-//            }
+            gh.deleteLocalRepo();
+            gh.cloneRepo();
+
+            gh.fetch(branch);
+
+            if (gh.checkout(branch)) {
+                gh.pull(branch);
+            } else {
+                logger.info(gh.getCurrentBranch());
+                return "Fatal error";
+            }
 
             // --- 2. Building project ---
 
