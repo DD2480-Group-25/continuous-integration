@@ -15,6 +15,10 @@ import java.io.File;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class ContinuousIntegrationServer {
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
     public static void main(String[] args) {
@@ -35,7 +39,24 @@ public class ContinuousIntegrationServer {
             response.type("text/html;charset=utf-8");
             response.status(HttpServletResponse.SC_OK);
 
+            // --- 0. Fetching and parsing payload ---
+
+
+            String payload = request.body();
             Gson gson = new Gson();
+
+            JsonObject jsonPayload = gson.fromJson(payload, JsonObject.class);
+            //which branch got pushed?
+            String ref = jsonPayload.get("ref").getAsString();
+            String sha = jsonPayload.get("after").getAsString();
+            // Assuming 'payload' is a String containing the JSON payload from the webhook
+            JsonObject payloadObj = JsonParser.parseString(payload).getAsJsonObject();
+            String repo = payloadObj.getAsJsonObject("repository").get("name").getAsString();
+            String owner = payloadObj.getAsJsonObject("repository").get("owner").getAsString();
+            // Perform CI tasks here
+            // For example:
+            // 1. Clone your repository
+            // 2. Compile the code
 
             String branch;
 
@@ -44,10 +65,6 @@ public class ContinuousIntegrationServer {
 
             if (userAgent != null && userAgent.startsWith("GitHub-Hookshot")) {
                 // Parse JSON payload
-                JsonObject payload = gson.fromJson(request.body(), JsonObject.class);
-
-                // Read branch information
-                String ref = payload.get("ref").getAsString();
                 branch = ref.replace("refs/heads/", "");
                 System.out.println("Changes were just made on branch: " + branch);
 
@@ -79,7 +96,18 @@ public class ContinuousIntegrationServer {
             // --- 3. Running tests ---
 
             // --- 4. Providing feedback
-
+            NotificatitonSystem ns = new NotificatitonSystem();
+            String result = "pass";
+            String token = "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";
+            //String owner = "WarlCang";
+            //String owner = "DD2480-Group-25";
+            //String repo = "test";
+            //String repo = "continuous-integration";
+            //String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
+            //String sha = jsonPayload.get("after").getAsString();
+            String targetUrl = "https://example.com/build/status";
+            String returned = ns.resultCheck(result,token, owner, repo, sha, targetUrl);
+            logger.info(returned);
 
             logger.info("CI job done");
             return "CI job done";
