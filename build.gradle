@@ -24,6 +24,8 @@ dependencies {
 
     //java mail
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.8'
 }
 
 test {
