@@ -114,7 +114,14 @@ public class ContinuousIntegrationServer {
         }
     }
 
+    /**
+     * Executes a Gradle build for a Git repo.
+     *
+     * @param gitHandler the GitHandler object providing access to the Git repo
+     */
+
     public static boolean runBuild(GitHandler gh) {
+
         try {
 
             if (!gh.isRepoCloned()) {
