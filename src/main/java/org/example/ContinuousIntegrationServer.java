@@ -41,7 +41,6 @@ public class ContinuousIntegrationServer {
 
             // --- 0. Fetching and parsing payload ---
 
-
             String payload = request.body();
             Gson gson = new Gson();
 
@@ -50,9 +49,9 @@ public class ContinuousIntegrationServer {
             String ref = jsonPayload.get("ref").getAsString();
             String sha = jsonPayload.get("after").getAsString();
             // Assuming 'payload' is a String containing the JSON payload from the webhook
-            JsonObject payloadObj = JsonParser.parseString(payload).getAsJsonObject();
-            String repo = payloadObj.getAsJsonObject("repository").get("name").getAsString();
-            String owner = payloadObj.getAsJsonObject("repository").get("owner").getAsString();
+            //JsonObject payloadObj = JsonParser.parseString(payload).getAsJsonObject();
+            String repo = "dummy-repo";
+            String owner = "ItsRkaj";
             // Perform CI tasks here
             // For example:
             // 1. Clone your repository
@@ -91,14 +90,14 @@ public class ContinuousIntegrationServer {
 
             // --- 2. Building project ---
           
-            runBuild(gh);
+            boolean buildSuccessful = runBuild(gh);
 
             // --- 3. Running tests ---
             runTest(gh);
 
             // --- 4. Providing feedback
             NotificatitonSystem ns = new NotificatitonSystem();
-            String result = "pass";
+            String result = buildSuccessful ? "pass" : "failed";
             String token = "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";
             //String owner = "WarlCang";
             //String owner = "DD2480-Group-25";
@@ -107,7 +106,7 @@ public class ContinuousIntegrationServer {
             //String sha = "f8378f85e2f998fbb13c554208f88cbea448eb0b";
             //String sha = jsonPayload.get("after").getAsString();
             String targetUrl = "https://example.com/build/status";
-            String returned = ns.resultCheck(result,token, owner, repo, sha, targetUrl);
+            String returned = ns.resultCheck(result, token, owner, repo, sha, targetUrl);
             logger.info(returned);
 
             logger.info("CI job done");
@@ -121,12 +120,13 @@ public class ContinuousIntegrationServer {
      * @param gitHandler the GitHandler object providing access to the Git repo
      */
 
-    public static void runBuild(GitHandler gh) {
+    public static boolean runBuild(GitHandler gh) {
+
         try {
 
             if (!gh.isRepoCloned()) {
                 logger.error("repo not cloned");
-                return;
+                return false;
             }
 
             File projectDir = gh.getLocalRepoDirFile();
@@ -135,11 +135,14 @@ public class ContinuousIntegrationServer {
 
             if (buildResult.isSuccess()) {
                 logger.info("Build successful");
+                return true;
             } else {
                 logger.error("Build failed: {}", buildResult.getOutput());
+                return false;
             }
         } catch (Exception e) {
             logger.error("Error occurred during build: {}", e.getMessage());
+            return false;
         }
     }
 
