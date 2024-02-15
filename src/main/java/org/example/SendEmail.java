@@ -5,9 +5,16 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
-
+/**
+ * Utility class to send email notifications using JavaMail API.
+ */
 public class SendEmail {
 
+    /**
+     * Sends an email with the specified content.
+     *
+     * @param content the content of the email message
+     */
     public void sendEmail(String content) {
         // Recipient's email ID needs to be mentioned.
         String[] to = new String[]{"carlwang1124@outlook.com"};

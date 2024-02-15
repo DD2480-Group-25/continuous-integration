@@ -9,6 +9,9 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import static org.example.Main.logger;
 
+/**
+ * Manages the notification system for continuous integration events.
+ */
 public class NotificatitonSystem {
 
     /*public static void main(String[] args) {
@@ -18,6 +21,17 @@ public class NotificatitonSystem {
         System.out.println(returned);
     }*/
 
+     /**
+     * Checks the result of a build/test and handles notifications accordingly.
+     *
+     * @param result     the result of the build/test ("pass" or "failed")
+     * @param token      the GitHub token for authorization
+     * @param owner      the owner of the GitHub repository
+     * @param repo       the name of the GitHub repository
+     * @param sha        the SHA of the commit
+     * @param targetUrl  the URL for the build/test status
+     * @return a message indicating the result of the operation
+     */
     public String resultCheck(String result, String token, String owner, String repo, String sha, String targetUrl) {
         String state;
         String description;
@@ -39,6 +53,19 @@ public class NotificatitonSystem {
         return "bug";
 
     }
+
+    /**
+     * Handles the setting of the commit status on GitHub and sends notifications.
+     *
+     * @param token       the GitHub token for authorization
+     * @param owner       the owner of the GitHub repository
+     * @param repo        the name of the GitHub repository
+     * @param sha         the SHA of the commit
+     * @param state       the state of the commit ("success" or "failure")
+     * @param targetUrl   the URL for the build/test status
+     * @param description the description of the commit status
+     * @return a message indicating the result of the operation
+     */
     public String statusHandler(String token, String owner, String repo, String sha, String state, String targetUrl, String description) {
         /* When a test result is received, the status handler resolve the result
          *
