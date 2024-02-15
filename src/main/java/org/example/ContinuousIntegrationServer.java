@@ -14,8 +14,22 @@ import java.io.File;
 
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * A continuous integration server that handles webhook events from GitHub.
+ */
+
 public class ContinuousIntegrationServer {
+
+    /**
+     * The logger instance for ContinuousIntegrationServer.
+     */
     public static final Logger logger = LoggerFactory.getLogger(ContinuousIntegrationServer.class);
+
+     /**
+     * Main method to start the continuous integration server.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         Spark.port(8080);
         Spark.get("/", (req, res) -> {
@@ -25,6 +39,10 @@ public class ContinuousIntegrationServer {
         });
         Spark.post("/webhook", new WebhookHandler());
     }
+
+    /**
+     * Handles webhook requests from GitHub.
+     */
     private static class WebhookHandler implements Route {
 
         // --- 0. Getting information from the payload ---
@@ -118,6 +136,7 @@ public class ContinuousIntegrationServer {
      * Executes a Gradle build for a Git repo.
      *
      * @param gh the GitHandler object providing access to the Git repo
+     * @return true if the build is successful, false otherwise
      */
 
     public static boolean runBuild(GitHandler gh) {
@@ -145,6 +164,13 @@ public class ContinuousIntegrationServer {
             return false;
         }
     }
+
+    /**
+     * Executes unit tests for a Git repo.
+     *
+     * @param gh the GitHandler object providing access to the Git repo
+     * @return true if the tests are successful, false otherwise
+     */
 
     public static boolean runTest(GitHandler gh) {
         try {

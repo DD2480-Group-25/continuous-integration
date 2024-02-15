@@ -13,27 +13,28 @@ import java.util.concurrent.TimeUnit;
 public class Build {
 
     /** 
-     * Executes a Gradle build.
+     * Executes a Gradle build for a specified project directory.
      *
      * @param projectDir the directory of the project to build
-     * @return a BuildResult object containing status of the build
+     * @return a BuildResult object containing the status and output of the build process
      */
 
     public BuildResult runGradleBuild(File projectDir) {
         try {
-            // Sets up GradleBuild using Process builder
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.directory(projectDir);
 
+             // Command to execute Gradle build
             processBuilder.command("./gradlew", "build");
-            processBuilder.redirectErrorStream(true); // This is used to merge the error and input stream into one
+            processBuilder.redirectErrorStream(true); // Merge error and input stream into one
 
             Process process = processBuilder.start();
              
             StringBuilder output = new StringBuilder();
 
             boolean buildStatus = true;
-            // Reads output and updates build status
+
+            // Read output and update build status
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -42,9 +43,9 @@ public class Build {
                         buildStatus = false;
                     }
                 }
-                System.out.println(output);
+                System.out.println(output); // Print output for debugging
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println(e.getMessage()); // Print error message
             }
 
             // Wait for process for 20 seconds to avoid getting stuck
@@ -58,6 +59,9 @@ public class Build {
         }
     }
 
+    /**
+     * Represents the result of a Gradle build operation.
+     */
     static class BuildResult {
         private final boolean success;
         private final String output;
@@ -74,10 +78,20 @@ public class Build {
             this.output = output;
         }
 
+        /**
+         * Checks if the build was successful.
+         *
+         * @return true if the build was successful, false otherwise
+         */
         public boolean isSuccess() {
             return success;
         }
 
+        /**
+         * Retrieves the output of the build process.
+         *
+         * @return the output of the build process
+         */
         public String getOutput() {
             return output;
         }
