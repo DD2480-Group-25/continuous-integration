@@ -1,4 +1,4 @@
-package org.example;
+package org.ci;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -7,7 +7,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
-import static org.example.Main.logger;
+import static org.ci.Main.logger;
 
 /**
  * Manages the notification system for continuous integration events.

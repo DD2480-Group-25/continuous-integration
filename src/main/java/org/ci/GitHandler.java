@@ -1,4 +1,4 @@
-package org.example;
+package org.ci;
 
 import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.example.Main.logger;
+import static org.ci.Main.logger;
 
 public class GitHandler {
     private final File localRepoDirFile;

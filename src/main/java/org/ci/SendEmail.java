@@ -1,4 +1,4 @@
-package org.example;
+package org.ci;
 
 import java.util.Properties;
 import jakarta.mail.*;

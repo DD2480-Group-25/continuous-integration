@@ -1,4 +1,4 @@
-package org.example;
+package org.ci;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.jupiter.api.Test;
