@@ -31,3 +31,14 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+javadoc {
+    // Compatible with a number of Gradle APIs that accept a java.io.File
+    Provider<Directory> output = layout.buildDirectory.dir("docs/javadoc")
+
+    // If you really need the java.io.File for a non lazy API
+    output.get().asFile
+
+    // Or a path for a lazy String based API
+    output.map { it.asFile.path }
+}

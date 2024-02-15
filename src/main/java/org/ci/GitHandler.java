@@ -41,6 +41,7 @@ public class GitHandler {
 
     /**
      * Getter for the repo File
+     * @return
      */
     public File getLocalRepoDirFile() {
         return localRepoDirFile;
@@ -48,6 +49,7 @@ public class GitHandler {
 
     /**
      * Returns true if the repo is present locally
+     * @return
      */
     public boolean isRepoCloned() {
         boolean result;
@@ -101,15 +103,39 @@ public class GitHandler {
     /**
      * Deletes a directory and its content recursively
      * @param path the path of the directory to be deleted
+     * @throws IOException
      */
     public static void delete(Path path) throws IOException {
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+            /**
+             *
+             * @param file
+             *          a reference to the file
+             * @param attrs
+             *          the file's basic attributes
+             *
+             * @return
+             * @throws IOException
+             */
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
 
+            /**
+             *
+             * @param dir
+             *          a reference to the directory
+             * @param exc
+             *          {@code null} if the iteration of the directory completes without
+             *          an error; otherwise the I/O exception that caused the iteration
+             *          of the directory to complete prematurely
+             *
+             * @return
+             * @throws IOException
+             */
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);
